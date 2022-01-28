@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import JobCard from '../../components/jobCard/JobCard';
-import myFireBase, { listenForJobChanges } from '../../utils/myFireBase';
+import myFireBase from '../../utils/myFireBase';
 import { IFullJob } from '../../utils/types';
 import './style.css';
 
@@ -8,7 +8,10 @@ export default function MainPage() {
 	const [jobs, setJobs] = useState<IFullJob[]>([]);
 
 	useEffect(
-		() => listenForJobChanges(() => myFireBase.jobs.getJobs().then(setJobs)),
+		() =>
+			myFireBase.listeners.listenForJobChanges(() =>
+				myFireBase.jobs.getJobs().then(setJobs)
+			),
 		[]
 	);
 

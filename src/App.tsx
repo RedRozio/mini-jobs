@@ -1,11 +1,11 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import React, { createContext, useState } from 'react';
-import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import theme from './constants/theme';
 import MainPage from './pages/mainPage/mainPage';
 import SigninPage from './pages/signinPage/signinPage';
 import SignupPage from './pages/signupPage/signupPage';
-import { listenForAuthChanges } from './utils/myFireBase';
+import myFireBase from './utils/myFireBase';
 import { IUser } from './utils/types';
 
 export const UserContext = createContext<IUser | null>(null);
@@ -15,7 +15,10 @@ function App() {
 	const [userState, setUserState] = useState<IUser | null>(null);
 
 	// Listen for auth state changes
-	React.useEffect(() => listenForAuthChanges(setUserState), []);
+	React.useEffect(
+		() => myFireBase.listeners.listenForAuthChanges(setUserState),
+		[]
+	);
 
 	return (
 		<ThemeProvider theme={theme}>

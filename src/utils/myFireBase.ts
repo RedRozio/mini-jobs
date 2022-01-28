@@ -49,7 +49,7 @@ const jobsQuery = query(collection(db, 'jobs'), orderBy('title'));
  * @param listener Function that accepts the user to do something
  * @returns The unsubscribe function to stop listening
  */
-export const listenForAuthChanges = (
+const listenForAuthChanges = (
 	listener: (user: IUser | null) => void
 ): Unsubscribe =>
 	auth.onAuthStateChanged(async (user) => {
@@ -65,7 +65,12 @@ export const listenForAuthChanges = (
 		} else listener(null);
 	});
 
-export const listenForJobChanges = (listener: () => void) => {
+/**
+ * Listens for CRUD changes in the jobs collection
+ * @param listener Function that is called when job collection changes
+ * @returns Unsubscribe function to stop listening
+ */
+const listenForJobChanges = (listener: () => void) => {
 	const unsubscribe = onSnapshot(jobsQuery, () => {
 		listener();
 	});
@@ -249,6 +254,10 @@ const myFireBase = {
 		getJobs,
 		getJob,
 		takeJob,
+	},
+	listeners: {
+		listenForAuthChanges,
+		listenForJobChanges,
 	},
 };
 
