@@ -3,7 +3,7 @@ import { UserContext } from '../../App';
 import JobCard from '../../components/jobCard/JobCard';
 import myFireBase, { listenForJobChanges } from '../../utils/myFireBase';
 import { IFullJob } from '../../utils/types';
-import './mainPage.css';
+import './style.css';
 
 export default function MainPage() {
 	const userContext = useContext(UserContext);

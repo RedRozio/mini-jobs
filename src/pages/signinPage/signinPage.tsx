@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
-import './signinPage.css';
+import './style.css';
 
 const initialValues = {
 	email: '',
