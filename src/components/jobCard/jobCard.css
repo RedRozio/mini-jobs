@@ -1,0 +1,17 @@
+.title-row {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+}
+
+.price-row {
+	display: flex;
+	gap: 0.3rem;
+	align-items: flex-start;
+	flex-direction: row;
+}
+
+.card {
+	width: 20rem;
+	height: fit-content;
+}
