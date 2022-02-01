@@ -11,7 +11,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
-import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { AccountCircle, Check } from '@mui/icons-material';
 import { ISimpleUser } from '../../utils/types';
@@ -39,7 +38,6 @@ export default function SignupPage() {
 	);
 	const [buttonState, setButtonState] =
 		React.useState<ButtonState>('noChanges');
-	const navigate = useNavigate();
 	const user = React.useContext(UserContext);
 
 	React.useEffect(() => {
