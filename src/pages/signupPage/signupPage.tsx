@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
-import FormField from '../../components/jobCard/formField/formField';
+import FormField from '../../components/formField/formField';
 
 const initialValues = {
 	firstName: '',

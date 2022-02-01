@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import WorkIcon from '@mui/icons-material/WorkOutline';
-import FormField from '../../components/jobCard/formField/formField';
+import FormField from '../../components/formField/formField';
 
 const initialValues = {
 	title: '',

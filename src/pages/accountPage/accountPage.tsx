@@ -12,7 +12,7 @@ import myFireBase from '../../utils/myFireBase';
 import { AccountCircle, Check } from '@mui/icons-material';
 import { ISimpleUser } from '../../utils/types';
 import { UserContext } from '../../App';
-import FormField from '../../components/jobCard/formField/formField';
+import FormField from '../../components/formField/formField';
 
 const initialValuesConst = {
 	firstName: '',
