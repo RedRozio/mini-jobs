@@ -1,12 +1,14 @@
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import {
+	Avatar,
+	Button,
+	CssBaseline,
+	Link,
+	Grid,
+	Box,
+	Typography,
+	Container,
+} from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import myFireBase from '../../utils/myFireBase';
