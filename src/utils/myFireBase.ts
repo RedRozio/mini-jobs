@@ -156,8 +156,15 @@ const signOut = async () => {
 };
 
 const getUser = async (id: string): Promise<ISimpleUser> => {
+	console.log(`users/${id}`);
+
 	const userDoc = await getDoc(doc(db, `users/${id}`));
 	return userDoc.data() as ISimpleUser;
+};
+
+const editUser = async (values: ISimpleUser) => {
+	const user = getCurrentUser();
+	await updateDoc(getUserDocRef(user.uid), values as any);
 };
 
 // deleteUser('anders.morille@gmail.com', 'abc123');
@@ -265,9 +272,11 @@ const myFireBase = {
 		signIn,
 		deleteAccount,
 		signOut,
+		getCurrentUser,
 	},
 	users: {
 		getUser,
+		editUser,
 	},
 	jobs: {
 		createJob,

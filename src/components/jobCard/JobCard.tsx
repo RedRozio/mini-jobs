@@ -40,8 +40,12 @@ export default function JobCard({ job }: IProps) {
 	const navigate = useNavigate();
 
 	const takeJob = () => {
-		myFireBase.jobs.takeJob(job.id).catch(() => {
-			navigate('/signin');
+		myFireBase.jobs.takeJob(job.id).catch((errorCode) => {
+			if (errorCode === 1) {
+				alert('Job is taken! Better luck next time!');
+			} else {
+				navigate('/signin');
+			}
 		});
 	};
 	const untakeJob = () => myFireBase.jobs.untakeJob(job.id);

@@ -8,6 +8,7 @@ import SignupPage from './pages/signupPage/signupPage';
 import CreateJobPage from './pages/createJobPage/createJobPage';
 import myFireBase from './utils/myFireBase';
 import { IUser } from './utils/types';
+import AccountPage from './pages/accountPage/accountPage';
 
 export const UserContext = createContext<IUser | null>(null);
 
@@ -31,6 +32,7 @@ function App() {
 						<Route path="signup" element={<SignupPage />} />
 						<Route path="signin" element={<SigninPage />} />
 						<Route path="createJob" element={<CreateJobPage />} />
+						<Route path="account" element={<AccountPage />} />
 					</Routes>
 				</BrowserRouter>
 			</UserContext.Provider>
