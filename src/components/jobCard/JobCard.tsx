@@ -12,6 +12,11 @@ import {
 	Menu,
 	MenuItem,
 	PopoverOrigin,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
@@ -44,6 +49,7 @@ export default function JobCard({ job }: IProps) {
 			: 'unavailable';
 	const isJobOwner = job.employer.id === userContext?.id;
 	const navigate = useNavigate();
+	const [dialogOpen, setDialogOpen] = useState(false);
 
 	const takeJob = () => {
 		myFireBase.jobs.takeJob(job.id).catch((errorCode) => {
@@ -63,50 +69,71 @@ export default function JobCard({ job }: IProps) {
 	};
 
 	return (
-		<Card className="card" variant="outlined">
-			<CardMedia component="img" height="120" image={job.image} />
-			<CardHeader
-				title={job.title}
-				subheader={`${formatDate(job.timeJob)} • ${job.price}kr`}
-				action={
-					isJobOwner && (
-						<div>
-							<IconButton onClick={handleMenu}>
-								<MoreVertIcon />
-							</IconButton>
-							<Menu
-								id="menu-appbar"
-								anchorEl={anchorEl}
-								anchorOrigin={anchorOrigin}
-								keepMounted
-								transformOrigin={anchorOrigin}
-								open={Boolean(anchorEl)}
-								onClose={handleClose}>
-								{/* <MenuItem onClick={handleClose}>Edit</MenuItem> */}
-								<MenuItem onClick={handleDeleteJob}>Delete</MenuItem>
-							</Menu>
-						</div>
-					)
-				}
-			/>
-			<CardActions disableSpacing>
-				{!isJobOwner && getApplyButton(jobStatus, takeJob, untakeJob)}
-				<ExpandMore expanded={expanded} onClick={() => setExpanded(!expanded)}>
-					<ExpandMoreIcon />
-				</ExpandMore>
-			</CardActions>
-			<Collapse in={expanded} timeout="auto" unmountOnExit>
-				<CardContent>
-					<Typography>{job.description}</Typography>
-					<br />
-					<Typography variant="body2" color="text.secondary" textAlign="right">
-						{job.employer.firstName} {job.employer.lastName}
+		<div>
+			<Card className="card" variant="outlined">
+				<CardMedia component="img" height="120" image={job.image} />
+				<CardHeader
+					title={job.title}
+					subheader={`${formatDate(job.timeJob)} • ${job.price}kr`}
+					action={
+						isJobOwner && (
+							<div>
+								<IconButton onClick={handleMenu}>
+									<MoreVertIcon />
+								</IconButton>
+								<Menu
+									id="menu-appbar"
+									anchorEl={anchorEl}
+									anchorOrigin={anchorOrigin}
+									keepMounted
+									transformOrigin={anchorOrigin}
+									open={Boolean(anchorEl)}
+									onClose={handleClose}>
+									{/* <MenuItem onClick={handleClose}>Edit</MenuItem> */}
+									<MenuItem onClick={() => setDialogOpen(true)}>
+										Delete
+									</MenuItem>
+								</Menu>
+							</div>
+						)
+					}
+				/>
+				<CardActions disableSpacing>
+					{!isJobOwner && getApplyButton(jobStatus, takeJob, untakeJob)}
+					<ExpandMore
+						expanded={expanded}
+						onClick={() => setExpanded(!expanded)}>
+						<ExpandMoreIcon />
+					</ExpandMore>
+				</CardActions>
+				<Collapse in={expanded} timeout="auto" unmountOnExit>
+					<CardContent>
+						<Typography>{job.description}</Typography>
 						<br />
-						{formatDate(job.timeCreated)}
-					</Typography>
-				</CardContent>
-			</Collapse>
-		</Card>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							textAlign="right">
+							{job.employer.firstName} {job.employer.lastName}
+							<br />
+							{formatDate(job.timeCreated)}
+						</Typography>
+					</CardContent>
+				</Collapse>
+			</Card>
+			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+				<DialogTitle>Delete job?</DialogTitle>
+				<DialogContent>
+					<DialogContentText>This action cannot be undone.</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+					<Button onClick={handleDeleteJob} autoFocus>
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</div>
 	);
 }
 
