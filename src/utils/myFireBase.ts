@@ -19,8 +19,15 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	Unsubscribe,
+	signOut as signOutAuth,
 } from 'firebase/auth';
-import { ISimpleUser, IUser, IFullJob } from './types';
+import {
+	ISimpleUser,
+	IUser,
+	IFullJob,
+	IUserParameter,
+	ISinginParams as ISigninParams,
+} from './types';
 import firebaseConfig from '../constants/firebaseConfig';
 
 const app = initializeApp(firebaseConfig);
@@ -37,10 +44,13 @@ const getCurrentUser = () => {
 	return user;
 };
 
-const timestampToDate = (timeStamp: {
+interface ITimeStamp {
 	seconds: number;
 	nanoseconds: number;
-}): Date => new Timestamp(timeStamp.seconds, timeStamp.nanoseconds).toDate();
+}
+
+const timestampToDate = ({ seconds, nanoseconds }: ITimeStamp) =>
+	new Timestamp(seconds, nanoseconds).toDate();
 
 const jobsQuery = query(collection(db, 'jobs'), orderBy('title'));
 
@@ -70,53 +80,46 @@ const listenForAuthChanges = (
  * @param listener Function that is called when job collection changes
  * @returns Unsubscribe function to stop listening
  */
-const listenForJobChanges = (listener: () => void) => {
-	const unsubscribe = onSnapshot(jobsQuery, () => {
-		listener();
+const listenForJobChanges = (listener: (jobs: IFullJob[]) => void) => {
+	const unsubscribe = onSnapshot(jobsQuery, ({ docs }) => {
+		const promises: Promise<IFullJob>[] = [];
+		for (let i = 0; i < docs.length; i++) {
+			promises.push(getJob(docs[i].id) as Promise<IFullJob>);
+		}
+		Promise.all(promises).then(listener);
 	});
 	return unsubscribe;
 };
-
-interface UserParameter {
-	email: string;
-	password: string;
-	firstName: string;
-	lastName: string;
-	employeeDescription?: string;
-	employerDescription?: string;
-}
 
 /**
  * Authenticates a user with email and password, and saves data on the users collection
  * @param user User information to use for authentication and document
  * @returns A user object containing information from the users collection
  */
-const createAccount = async (user: UserParameter): Promise<IUser> => {
+const createAccount = async (user: IUserParameter): Promise<IUser> => {
 	const {
 		email,
 		password,
 		firstName,
 		lastName,
-		employeeDescription,
-		employerDescription,
+		employeeDescription: erDesc,
+		employerDescription: eeDesk,
 	} = user;
 
-	const { user: newUser } = await createUserWithEmailAndPassword(
-		auth,
-		email,
-		password
-	);
+	const {
+		user: { uid },
+	} = await createUserWithEmailAndPassword(auth, email, password);
 
 	const userDoc = {
 		firstName,
 		lastName,
-		employeeDescription: employeeDescription ?? '',
-		employerDescription: employerDescription ?? '',
+		employeeDescription: erDesc ?? '',
+		employerDescription: eeDesk ?? '',
 	};
 
 	// Creates document with user UID as the ID
-	await setDoc(getUserDocRef(newUser.uid), userDoc);
-	return { ...userDoc, id: newUser.uid };
+	await setDoc(getUserDocRef(uid), userDoc);
+	return { ...userDoc, id: uid };
 };
 
 /**
@@ -125,7 +128,7 @@ const createAccount = async (user: UserParameter): Promise<IUser> => {
  * @param password Password to use
  * @returns User object with UID
  */
-const signIn = async (email: string, password: string): Promise<IUser> => {
+const signIn = async ({ email, password }: ISigninParams): Promise<IUser> => {
 	const { user: authUser } = await signInWithEmailAndPassword(
 		auth,
 		email,
@@ -146,6 +149,10 @@ const deleteAccount = async (email: string, password: string) => {
 	if (!user) throw new Error('Not currently signed in');
 	await deleteDoc(getUserDocRef(user.uid));
 	await user.delete();
+};
+
+const signOut = async () => {
+	signOutAuth(auth);
 };
 
 const getUser = async (id: string): Promise<ISimpleUser> => {
@@ -174,9 +181,10 @@ interface JobParameter {
 const createJob = async (job: JobParameter) => {
 	const jobObject = {
 		...job,
-		timeCreated: new Date(),
+		timeCreated: Timestamp.fromDate(new Date()),
 		employee: '',
 		employer: getCurrentUser().uid,
+		timeJob: Timestamp.fromDate(job.timeJob),
 	};
 	const jobDoc = await addDoc(collection(db, 'jobs'), jobObject);
 	return jobDoc.id;
@@ -239,11 +247,24 @@ const takeJob = async (id: string): Promise<number> => {
 	return 0;
 };
 
+const untakeJob = async (id: string): Promise<number> => {
+	const job = await getJob(id);
+	if (!job) return 1;
+	if (job.employee?.id === getCurrentUser().uid) {
+		await updateDoc(doc(db, `jobs/${id}`), {
+			employee: '',
+		});
+		return 0;
+	}
+	return 2;
+};
+
 const myFireBase = {
 	auth: {
 		createAccount,
 		signIn,
 		deleteAccount,
+		signOut,
 	},
 	users: {
 		getUser,
@@ -254,6 +275,7 @@ const myFireBase = {
 		getJobs,
 		getJob,
 		takeJob,
+		untakeJob,
 	},
 	listeners: {
 		listenForAuthChanges,

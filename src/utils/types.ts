@@ -41,3 +41,17 @@ export interface ISimpleUser {
 	employeeDescription: string;
 	firstName: string;
 }
+
+export interface IUserParameter {
+	email: string;
+	password: string;
+	firstName: string;
+	lastName: string;
+	employeeDescription?: string;
+	employerDescription?: string;
+}
+
+export interface ISinginParams {
+	email: string;
+	password: string;
+}

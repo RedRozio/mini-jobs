@@ -6,58 +6,88 @@ import {
 	CardActions,
 	Button,
 	CardHeader,
-	styled,
-	IconButton,
 	Collapse,
+	CardMedia,
+	IconButton,
+	Menu,
+	MenuItem,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import myFireBase from '../../utils/myFireBase';
 import { IFullJob } from '../../utils/types';
+import ExpandMore from './ExpandMore';
 import './jobCard.css';
+import { useNavigate } from 'react-router-dom';
+import formatDate from '../../utils/formatDate';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface IProps {
 	job: IFullJob;
 }
 
-const ExpandMore = styled((props: any) => {
-	const { expand, ...other } = props;
-	return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-	marginLeft: 'auto',
-	transition: theme.transitions.create('transform', {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
-
 export default function JobCard({ job }: IProps) {
 	const userContext = useContext(UserContext);
 	const [expanded, setExpanded] = useState(false);
+	const [anchorEl, setAnchorEl] = useState<any>(null);
 	const jobStatus =
 		job.employee === null
 			? 'available'
 			: job.employee.id === userContext?.id
 			? 'taken'
 			: 'unavailable';
+	const isJobOwner = job.employer.id === userContext?.id;
+	const navigate = useNavigate();
 
-	const takeJob = () => myFireBase.jobs.takeJob(job.id);
+	const takeJob = () => {
+		myFireBase.jobs.takeJob(job.id).catch(() => {
+			navigate('/signin');
+		});
+	};
+	const untakeJob = () => myFireBase.jobs.untakeJob(job.id);
+	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
+	const handleClose = () => setAnchorEl(null);
+
+	const handleDeleteJob = () => {
+		myFireBase.jobs.deleteJob(job.id);
+	};
 
 	return (
 		<Card className="card" variant="outlined">
+			<CardMedia component="img" height="120" image={job.image} />
 			<CardHeader
 				title={job.title}
-				subheader={job.timeJob.toDateString()}
+				subheader={`${formatDate(job.timeJob)} • ${job.price}kr`}
 				action={
-					<Typography variant="body1" component="div">
-						kr {job.price}
-					</Typography>
+					isJobOwner && (
+						<div>
+							<IconButton onClick={handleMenu}>
+								<MoreVertIcon />
+							</IconButton>
+							<Menu
+								id="menu-appbar"
+								anchorEl={anchorEl}
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								open={Boolean(anchorEl)}
+								onClose={handleClose}>
+								<MenuItem onClick={handleClose}>Edit</MenuItem>
+								<MenuItem onClick={handleDeleteJob}>Delete</MenuItem>
+							</Menu>
+						</div>
+					)
 				}
 			/>
-
 			<CardActions disableSpacing>
-				{getApplyButton(jobStatus, takeJob)}
-				<ExpandMore expand={expanded} onClick={() => setExpanded(!expanded)}>
+				{!isJobOwner && getApplyButton(jobStatus, takeJob, untakeJob)}
+				<ExpandMore expanded={expanded} onClick={() => setExpanded(!expanded)}>
 					<ExpandMoreIcon />
 				</ExpandMore>
 			</CardActions>
@@ -69,7 +99,7 @@ export default function JobCard({ job }: IProps) {
 						{/* Job created at <br /> */}
 						{job.employer.firstName} {job.employer.lastName}
 						<br />
-						{job.timeCreated.toDateString()}
+						{formatDate(job.timeCreated)}
 					</Typography>
 				</CardContent>
 			</Collapse>
@@ -77,28 +107,27 @@ export default function JobCard({ job }: IProps) {
 	);
 }
 
-const getApplyButton = (jobStatus: string, takeJob: () => void) => {
+const getApplyButton = (
+	jobStatus: string,
+	takeJob: () => void,
+	untakeJob: () => void
+) => {
 	if (jobStatus === 'available')
 		return (
-			<Button onClick={takeJob} variant="text" color="primary">
+			<Button onClick={takeJob} color="primary">
 				Take job
 			</Button>
 		);
-	/* 		if (jobStatus === "taken")
+	if (jobStatus === 'taken')
 		return (
-			<Button
-				onClick={() => takeJob(job.id)}
-				// disabled={job.employee !== null}
-				variant="outlined"
-				color="primary"
-				startIcon={<Work />}>
-				Untake job
+			<Button onClick={untakeJob} color="error">
+				Cancel job
 			</Button>
-		); */
+		);
 
 	return (
 		<Button disabled variant="text" color="primary">
-			Job taken
+			Unavailable
 		</Button>
 	);
 };

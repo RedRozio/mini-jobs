@@ -30,12 +30,27 @@ const validationSchema = Yup.object().shape({
 export default function SigninPage() {
 	const navigate = useNavigate();
 
-	const onSubmit = (formValues: typeof initialValues) => {
-		const { email, password } = formValues;
-		myFireBase.auth.signIn(email, password).then(() => navigate('/'));
-	};
+	const onSubmit = (formValues: typeof initialValues) =>
+		myFireBase.auth
+			.signIn(formValues)
+			.then(() => navigate('/'))
+			.catch((e) => {
+				if (e.message === 'Firebase: Error (auth/user-not-found).') {
+					setErrors({
+						...errors,
+						email: 'No user with given email address',
+					});
+				} else if (e.message === 'Firebase: Error (auth/wrong-password).') {
+					setErrors({
+						...errors,
+						password: 'Wrong password',
+					});
+				} else {
+					alert('Sorry, something went wrong ...');
+				}
+			});
 
-	const { handleChange, submitForm, errors } = useFormik({
+	const { handleChange, submitForm, errors, setErrors } = useFormik({
 		initialValues,
 		onSubmit,
 		validationSchema,
@@ -49,52 +64,55 @@ export default function SigninPage() {
 					<LockOutlinedIcon />
 				</Avatar>
 				<Typography component="h1" variant="h5">
-					Sign up
+					Sign in
 				</Typography>
 				<Box sx={{ mt: 3 }}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								required
-								fullWidth
-								id="email"
-								label="Email Address"
-								name="email"
-								autoComplete="email"
-								error={!!errors.email}
-								onChange={handleChange('email')}
-							/>
-							<FormHelperText error>{errors.email}</FormHelperText>
+					<form onSubmit={(e) => e.preventDefault()}>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									id="email"
+									label="Email Address"
+									name="email"
+									autoComplete="email"
+									error={!!errors.email}
+									onChange={handleChange('email')}
+								/>
+								<FormHelperText error>{errors.email}</FormHelperText>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									name="password"
+									label="Password"
+									type="password"
+									id="password"
+									autoComplete="new-password"
+									error={!!errors.password}
+									onChange={handleChange('password')}
+								/>
+								<FormHelperText error>{errors.password}</FormHelperText>
+							</Grid>
 						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="new-password"
-								error={!!errors.password}
-								onChange={handleChange('password')}
-							/>
-							<FormHelperText error>{errors.password}</FormHelperText>
+						<Button
+							type="submit"
+							onClick={submitForm}
+							fullWidth
+							variant="contained"
+							sx={{ mt: 3, mb: 2 }}>
+							Sign In
+						</Button>
+						<Grid container justifyContent="flex-end">
+							<Grid item>
+								<Link href="/signup" variant="body2">
+									Don't have an account? Sign up
+								</Link>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Button
-						onClick={submitForm}
-						fullWidth
-						variant="contained"
-						sx={{ mt: 3, mb: 2 }}>
-						Sign Up
-					</Button>
-					<Grid container justifyContent="flex-end">
-						<Grid item>
-							<Link href="/signup" variant="body2">
-								Don't have an account? Sign up
-							</Link>
-						</Grid>
-					</Grid>
+					</form>
 				</Box>
 			</Box>
 		</Container>

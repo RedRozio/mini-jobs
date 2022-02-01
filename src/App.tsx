@@ -5,6 +5,7 @@ import theme from './constants/theme';
 import MainPage from './pages/mainPage/mainPage';
 import SigninPage from './pages/signinPage/signinPage';
 import SignupPage from './pages/signupPage/signupPage';
+import CreateJobPage from './pages/createJobPage/createJobPage';
 import myFireBase from './utils/myFireBase';
 import { IUser } from './utils/types';
 
@@ -24,11 +25,12 @@ function App() {
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<UserContext.Provider value={userState}>
-				<BrowserRouter basename="/mini-jobs">
+				<BrowserRouter>
 					<Routes>
 						<Route index element={<MainPage />} />
 						<Route path="signup" element={<SignupPage />} />
 						<Route path="signin" element={<SigninPage />} />
+						<Route path="createJob" element={<CreateJobPage />} />
 					</Routes>
 				</BrowserRouter>
 			</UserContext.Provider>
