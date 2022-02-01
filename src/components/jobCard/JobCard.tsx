@@ -82,7 +82,7 @@ export default function JobCard({ job }: IProps) {
 								}}
 								open={Boolean(anchorEl)}
 								onClose={handleClose}>
-								<MenuItem onClick={handleClose}>Edit</MenuItem>
+								{/* <MenuItem onClick={handleClose}>Edit</MenuItem> */}
 								<MenuItem onClick={handleDeleteJob}>Delete</MenuItem>
 							</Menu>
 						</div>

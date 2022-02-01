@@ -3,10 +3,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
@@ -73,13 +71,19 @@ export default function SignupPage() {
 	});
 
 	React.useEffect(() => {
+		let state = false;
 		for (let key in initialValues) {
 			const iv = initialValues as any;
 			const v = values as any;
 			if (iv[key] !== v[key]) {
-				setButtonState('unsavedChanges');
+				state = true;
 				break;
 			}
+		}
+		if (state) {
+			setButtonState('unsavedChanges');
+		} else {
+			setButtonState('noChanges');
 		}
 	}, [initialValues, values]);
 

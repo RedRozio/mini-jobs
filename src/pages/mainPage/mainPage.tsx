@@ -32,6 +32,7 @@ export default function MainPage() {
 		});
 	};
 	const createJob = () => navigate('createJob');
+	const handleAccount = () => navigate('/account');
 
 	return (
 		<div>
@@ -70,7 +71,7 @@ export default function MainPage() {
 							}}
 							open={Boolean(anchorEl)}
 							onClose={handleClose}>
-							<MenuItem onClick={handleClose}>Account</MenuItem>
+							<MenuItem onClick={handleAccount}>Account</MenuItem>
 							<MenuItem onClick={handleSignOut}>Sign out</MenuItem>
 						</Menu>
 					</div>

@@ -6477,11 +6477,6 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-material-ui-confirm@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-2.1.4.tgz#2d27d7632268009a7322ffdf1652235bfb534045"
-  integrity sha512-n0R0nLNpeTVuyxniDQ0gvXS19tAfNC6EpFe4Q0VfZ9J2GCKtzJQ7n/JNAD8XGTdFAzCky0yuBj9qTBRi5A4XgA==
-
 mdn-data@2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
