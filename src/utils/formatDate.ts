@@ -1,3 +1,9 @@
+/**
+ * Formats a given date to a nice string,
+ * following the norwegian standard format
+ * @param date The date to format
+ * @returns A formatted date string
+ */
 export default function formatDate(date: Date) {
 	const day = makeTwoDigits(date.getDate());
 	const month = makeTwoDigits(date.getMonth() + 1);

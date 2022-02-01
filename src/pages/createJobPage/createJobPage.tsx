@@ -1,17 +1,16 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import WorkIcon from '@mui/icons-material/WorkOutline';
+import FormField from '../../components/jobCard/formField/formField';
 
 const initialValues = {
 	title: '',
@@ -43,7 +42,7 @@ export default function SignupPage() {
 			});
 	};
 
-	const { handleChange, submitForm, errors, values } = useFormik({
+	const formik = useFormik({
 		initialValues,
 		onSubmit,
 		validationSchema,
@@ -68,80 +67,44 @@ export default function SignupPage() {
 				<Box sx={{ mt: 3 }}>
 					<form onSubmit={(e) => e.preventDefault()}>
 						<Grid container spacing={2}>
-							<Grid item xs={12}>
-								<TextField
-									name="title"
-									required
-									fullWidth
-									autoFocus
-									id="title"
-									label="Job title"
-									error={!!errors.title}
-									onChange={handleChange('title')}
-									value={values.title}
-								/>
-								<FormHelperText error>{errors.title}</FormHelperText>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									name="description"
-									required
-									fullWidth
-									id="description"
-									label="Job description"
-									error={!!errors.description}
-									multiline
-									onChange={handleChange('description')}
-									value={values.description}
-								/>
-								<FormHelperText error>{errors.description}</FormHelperText>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									name="price"
-									required
-									fullWidth
-									id="price"
-									label="Price"
-									error={!!errors.price}
-									onChange={handleChange('price')}
-									type="number"
-									value={values.price}
-								/>
-								<FormHelperText error>{errors.price}</FormHelperText>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									name="image"
-									required
-									fullWidth
-									id="image"
-									label="Image link"
-									error={!!errors.image}
-									onChange={handleChange('image')}
-									multiline
-									value={values.image}
-								/>
-								<FormHelperText error>{errors.image}</FormHelperText>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									name="date"
-									required
-									fullWidth
-									id="date"
-									label="Time"
-									type="datetime-local"
-									error={!!errors.timeJob}
-									onChange={handleChange('timeJob')}
-									value={values.timeJob}
-								/>
-								<FormHelperText error>{errors.timeJob}</FormHelperText>
-							</Grid>
+							<FormField
+								formik={formik}
+								id="title"
+								title="Job title"
+								fullWidth
+							/>
+							<FormField
+								formik={formik}
+								id="description"
+								title="Job description"
+								fullWidth
+							/>
+							<FormField
+								formik={formik}
+								id="price"
+								title="Price"
+								fullWidth
+								number
+							/>
+							<FormField
+								formik={formik}
+								id="image"
+								title="Image link"
+								fullWidth
+								number
+								multiline
+							/>
+							<FormField
+								formik={formik}
+								id="date"
+								title="Time"
+								fullWidth
+								date
+							/>
 						</Grid>
 						<Button
 							type="submit"
-							onClick={submitForm}
+							onClick={formik.submitForm}
 							fullWidth
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}>

@@ -55,3 +55,8 @@ export interface ISinginParams {
 	email: string;
 	password: string;
 }
+
+export interface ITimeStamp {
+	seconds: number;
+	nanoseconds: number;
+}

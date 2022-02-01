@@ -11,6 +11,7 @@ import {
 	IconButton,
 	Menu,
 	MenuItem,
+	PopoverOrigin,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../App';
@@ -25,6 +26,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 interface IProps {
 	job: IFullJob;
 }
+
+const anchorOrigin: PopoverOrigin = {
+	vertical: 'top',
+	horizontal: 'right',
+};
 
 export default function JobCard({ job }: IProps) {
 	const userContext = useContext(UserContext);
@@ -71,15 +77,9 @@ export default function JobCard({ job }: IProps) {
 							<Menu
 								id="menu-appbar"
 								anchorEl={anchorEl}
-								anchorOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}
+								anchorOrigin={anchorOrigin}
 								keepMounted
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'right',
-								}}
+								transformOrigin={anchorOrigin}
 								open={Boolean(anchorEl)}
 								onClose={handleClose}>
 								{/* <MenuItem onClick={handleClose}>Edit</MenuItem> */}
@@ -100,7 +100,6 @@ export default function JobCard({ job }: IProps) {
 					<Typography>{job.description}</Typography>
 					<br />
 					<Typography variant="body2" color="text.secondary" textAlign="right">
-						{/* Job created at <br /> */}
 						{job.employer.firstName} {job.employer.lastName}
 						<br />
 						{formatDate(job.timeCreated)}
@@ -116,22 +115,24 @@ const getApplyButton = (
 	takeJob: () => void,
 	untakeJob: () => void
 ) => {
-	if (jobStatus === 'available')
-		return (
-			<Button onClick={takeJob} color="primary">
-				Take job
-			</Button>
-		);
-	if (jobStatus === 'taken')
-		return (
-			<Button onClick={untakeJob} color="error">
-				Cancel job
-			</Button>
-		);
-
-	return (
-		<Button disabled variant="text" color="primary">
-			Unavailable
-		</Button>
-	);
+	switch (jobStatus) {
+		case 'available':
+			return (
+				<Button onClick={takeJob} color="primary">
+					Take job
+				</Button>
+			);
+		case 'taken':
+			return (
+				<Button onClick={untakeJob} color="error">
+					Cancel job
+				</Button>
+			);
+		default:
+			return (
+				<Button disabled variant="text" color="primary">
+					Unavailable
+				</Button>
+			);
+	}
 };

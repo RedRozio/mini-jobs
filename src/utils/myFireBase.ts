@@ -27,6 +27,7 @@ import {
 	IFullJob,
 	IUserParameter,
 	ISinginParams as ISigninParams,
+	ITimeStamp,
 } from './types';
 import firebaseConfig from '../constants/firebaseConfig';
 
@@ -34,20 +35,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const getUserDocRef = (id: string) => {
-	return doc(db, `users/${id}`);
-};
+const getUserDocRef = (id: string) => doc(db, `users/${id}`);
 
 const getCurrentUser = () => {
 	const user = auth.currentUser;
 	if (!user) throw new Error('Not currently signed in');
 	return user;
 };
-
-interface ITimeStamp {
-	seconds: number;
-	nanoseconds: number;
-}
 
 const timestampToDate = ({ seconds, nanoseconds }: ITimeStamp) =>
 	new Timestamp(seconds, nanoseconds).toDate();
@@ -144,7 +138,6 @@ const signIn = async ({ email, password }: ISigninParams): Promise<IUser> => {
  * @param uid The email and password of the user to delete
  */
 const deleteAccount = async (email: string, password: string) => {
-	// const { user } = await signInWithEmailAndPassword(auth, email, password);
 	const user = auth.currentUser;
 	if (!user) throw new Error('Not currently signed in');
 	await deleteDoc(getUserDocRef(user.uid));
@@ -167,15 +160,11 @@ const editUser = async (values: ISimpleUser) => {
 	await updateDoc(getUserDocRef(user.uid), values as any);
 };
 
-// deleteUser('anders.morille@gmail.com', 'abc123');
-
 interface JobParameter {
 	title: string;
 	description: string;
-	// employer: string
 	image: string;
 	price: number;
-	// timeCreated: Date,
 	timeJob: Date;
 }
 

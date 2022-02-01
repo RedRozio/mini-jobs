@@ -2,19 +2,17 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
-import './style.css';
 import { AccountCircle, Check } from '@mui/icons-material';
 import { ISimpleUser } from '../../utils/types';
 import { UserContext } from '../../App';
+import FormField from '../../components/jobCard/formField/formField';
 
 const initialValuesConst = {
 	firstName: '',
@@ -61,12 +59,13 @@ export default function SignupPage() {
 		});
 	};
 
-	const { handleChange, submitForm, errors, values } = useFormik({
+	const formik = useFormik({
 		initialValues: initialValues ?? initialValuesConst,
 		onSubmit,
 		validationSchema,
 		enableReinitialize: true,
 	});
+	const { handleChange, submitForm, errors, values } = formik;
 
 	React.useEffect(() => {
 		let state = false;
@@ -103,66 +102,20 @@ export default function SignupPage() {
 				</Typography>
 				<Box sx={{ mt: 3 }}>
 					<Grid container spacing={2}>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								autoComplete="given-name"
-								name="firstName"
-								required
-								fullWidth
-								id="firstName"
-								label="First Name"
-								error={!!errors.firstName}
-								onChange={handleChange('firstName')}
-								value={values.firstName}
-							/>
-							<FormHelperText error>{errors.firstName}</FormHelperText>
-						</Grid>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								required
-								fullWidth
-								id="lastName"
-								label="Last Name"
-								name="lastName"
-								autoComplete="family-name"
-								error={!!errors.lastName}
-								onChange={handleChange('lastName')}
-								value={values.lastName}
-							/>
-							<FormHelperText error>{errors.lastName}</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								fullWidth
-								name="employeeDescription"
-								required
-								label="Employee Description"
-								type="text"
-								id="employeeDescription"
-								error={!!errors.employeeDescription}
-								onChange={handleChange('employeeDescription')}
-								value={values.employeeDescription}
-							/>
-							<FormHelperText error>
-								{errors.employeeDescription}
-							</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								fullWidth
-								required
-								name="employerDescription"
-								label="Employer Description"
-								type="text"
-								id="employerDescription"
-								error={!!errors.employerDescription}
-								onChange={handleChange('employerDescription')}
-								value={values.employerDescription}
-							/>
-							<FormHelperText error>
-								{errors.employerDescription}
-							</FormHelperText>
-						</Grid>
+						<FormField formik={formik} id="firstName" title="First name" />
+						<FormField formik={formik} id="lastName" title="Last name" />
+						<FormField
+							formik={formik}
+							id="employeeDescription"
+							title="Employee description"
+							fullWidth
+						/>
+						<FormField
+							formik={formik}
+							id="employerDescription"
+							title="Employer description"
+							fullWidth
+						/>
 					</Grid>
 					<Button
 						disabled={buttonState === 'noChanges'}

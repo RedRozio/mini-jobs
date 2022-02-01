@@ -1,8 +1,6 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -11,10 +9,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
+import FormField from '../../components/jobCard/formField/formField';
 
 const initialValues = {
 	email: '',
@@ -34,13 +32,13 @@ export default function SigninPage() {
 		myFireBase.auth
 			.signIn(formValues)
 			.then(() => navigate('/'))
-			.catch((e) => {
-				if (e.message === 'Firebase: Error (auth/user-not-found).') {
+			.catch((e: Error) => {
+				if (e.message.includes('user-not-found')) {
 					setErrors({
 						...errors,
 						email: 'No user with given email address',
 					});
-				} else if (e.message === 'Firebase: Error (auth/wrong-password).') {
+				} else if (e.message.includes('wrong-password')) {
 					setErrors({
 						...errors,
 						password: 'Wrong password',
@@ -50,11 +48,12 @@ export default function SigninPage() {
 				}
 			});
 
-	const { handleChange, submitForm, errors, setErrors } = useFormik({
+	const formik = useFormik({
 		initialValues,
 		onSubmit,
 		validationSchema,
 	});
+	const { submitForm, errors, setErrors } = formik;
 
 	return (
 		<Container component="main" maxWidth="xs" className="main">
@@ -69,33 +68,19 @@ export default function SigninPage() {
 				<Box sx={{ mt: 3 }}>
 					<form onSubmit={(e) => e.preventDefault()}>
 						<Grid container spacing={2}>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="email"
-									label="Email Address"
-									name="email"
-									autoComplete="email"
-									error={!!errors.email}
-									onChange={handleChange('email')}
-								/>
-								<FormHelperText error>{errors.email}</FormHelperText>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									name="password"
-									label="Password"
-									type="password"
-									id="password"
-									autoComplete="new-password"
-									error={!!errors.password}
-									onChange={handleChange('password')}
-								/>
-								<FormHelperText error>{errors.password}</FormHelperText>
-							</Grid>
+							<FormField
+								formik={formik}
+								id="email"
+								title="Email address"
+								fullWidth
+							/>
+							<FormField
+								formik={formik}
+								id="password"
+								title="Password"
+								fullWidth
+								password
+							/>
 						</Grid>
 						<Button
 							type="submit"

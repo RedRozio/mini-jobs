@@ -11,10 +11,16 @@ import {
 	Menu,
 	MenuItem,
 	Button,
+	PopoverOrigin,
 } from '@mui/material';
 import { AccountCircle, WorkOutline as WorkIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../App';
+
+const anchorOrigin: PopoverOrigin = {
+	vertical: 'top',
+	horizontal: 'right',
+};
 
 export default function MainPage() {
 	const [jobs, setJobs] = useState<IFullJob[]>([]);
@@ -60,15 +66,9 @@ export default function MainPage() {
 						<Menu
 							id="menu-appbar"
 							anchorEl={anchorEl}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
+							anchorOrigin={anchorOrigin}
 							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
+							transformOrigin={anchorOrigin}
 							open={Boolean(anchorEl)}
 							onClose={handleClose}>
 							<MenuItem onClick={handleAccount}>Account</MenuItem>

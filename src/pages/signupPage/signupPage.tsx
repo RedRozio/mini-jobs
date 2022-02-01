@@ -1,8 +1,6 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -11,9 +9,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FormHelperText } from '@mui/material';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
+import FormField from '../../components/jobCard/formField/formField';
 
 const initialValues = {
 	firstName: '',
@@ -38,12 +36,12 @@ export default function SignupPage() {
 	const navigate = useNavigate();
 
 	const onSubmit = (formValues: typeof initialValues) => {
-		myFireBase.auth.createAccount(formValues).then((user) => {
+		myFireBase.auth.createAccount(formValues).then(() => {
 			navigate('/');
 		});
 	};
 
-	const { handleChange, submitForm, errors } = useFormik({
+	const formik = useFormik({
 		initialValues,
 		onSubmit,
 		validationSchema,
@@ -67,91 +65,47 @@ export default function SignupPage() {
 				</Typography>
 				<Box sx={{ mt: 3 }}>
 					<Grid container spacing={2}>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								autoComplete="given-name"
-								name="firstName"
-								required
-								fullWidth
-								id="firstName"
-								label="First Name"
-								autoFocus
-								error={!!errors.firstName}
-								onChange={handleChange('firstName')}
-							/>
-							<FormHelperText error>{errors.firstName}</FormHelperText>
-						</Grid>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								required
-								fullWidth
-								id="lastName"
-								label="Last Name"
-								name="lastName"
-								autoComplete="family-name"
-								error={!!errors.lastName}
-								onChange={handleChange('lastName')}
-							/>
-							<FormHelperText error>{errors.lastName}</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								required
-								fullWidth
-								id="email"
-								label="Email Address"
-								name="email"
-								autoComplete="email"
-								error={!!errors.email}
-								onChange={handleChange('email')}
-							/>
-							<FormHelperText error>{errors.email}</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="new-password"
-								error={!!errors.password}
-								onChange={handleChange('password')}
-							/>
-							<FormHelperText error>{errors.password}</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								fullWidth
-								name="employeeDescription"
-								label="Employee Description (optional)"
-								type="text"
-								id="employeeDescription"
-								error={!!errors.employeeDescription}
-								onChange={handleChange('employeeDescription')}
-							/>
-							<FormHelperText error>
-								{errors.employeeDescription}
-							</FormHelperText>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								fullWidth
-								name="employerDescription"
-								label="Employer Description (optional)"
-								type="text"
-								id="employerDescription"
-								error={!!errors.employerDescription}
-								onChange={handleChange('employerDescription')}
-							/>
-							<FormHelperText error>
-								{errors.employerDescription}
-							</FormHelperText>
-						</Grid>
+						<FormField
+							formik={formik}
+							id="firstName"
+							title="First name"
+							fullWidth
+						/>
+						<FormField
+							formik={formik}
+							id="lastName"
+							title="Last name"
+							fullWidth
+						/>
+						<FormField
+							formik={formik}
+							id="email"
+							title="Email address"
+							fullWidth
+						/>
+						<FormField
+							formik={formik}
+							id="password"
+							title="Password"
+							fullWidth
+						/>
+						<FormField
+							formik={formik}
+							id="employeeDescription"
+							title="Employee Description (optional)"
+							fullWidth
+							multiline
+						/>
+						<FormField
+							formik={formik}
+							id="employerDescription"
+							title="Employer Description (optional)"
+							fullWidth
+							multiline
+						/>
 					</Grid>
 					<Button
-						onClick={submitForm}
+						onClick={formik.submitForm}
 						fullWidth
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}>
