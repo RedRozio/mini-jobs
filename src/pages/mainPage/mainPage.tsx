@@ -16,6 +16,12 @@ import {
 import { AccountCircle, WorkOutline as WorkIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../App';
+import ChipFilter from '../../components/chipFilter/chipFilter';
+import {
+	OnSortOrFilterHandler,
+	SortTypes,
+} from '../../components/chipFilter/reducer';
+import sortJobs from '../../utils/sortJobs';
 
 const anchorOrigin: PopoverOrigin = {
 	vertical: 'top',
@@ -24,11 +30,20 @@ const anchorOrigin: PopoverOrigin = {
 
 export default function MainPage() {
 	const [jobs, setJobs] = useState<IFullJob[]>([]);
+	const [sortedJobs, setSortedJobs] = useState<IFullJob[]>([]);
+	const [sortTypes, setSortTypes] = useState<SortTypes>({
+		sortType: undefined,
+		filters: [],
+	});
 	const [anchorEl, setAnchorEl] = useState<any>(null);
 	const navigate = useNavigate();
 	const user = useContext(UserContext);
 
 	useEffect(() => myFireBase.listeners.listenForJobChanges(setJobs), []);
+	useEffect(
+		() => setSortedJobs(sortJobs(jobs, sortTypes, user?.id)),
+		[sortTypes, jobs, user?.id]
+	);
 
 	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
 	const handleClose = () => setAnchorEl(null);
@@ -40,6 +55,13 @@ export default function MainPage() {
 	const createJob = () => navigate('createJob');
 	const handleAccount = () => navigate('/account');
 	const handleSignIn = () => navigate('/signin');
+
+	const handleOnSortOrFilter: OnSortOrFilterHandler = (sortType, filters) => {
+		setSortTypes({
+			sortType,
+			filters,
+		});
+	};
 
 	return (
 		<div>
@@ -82,8 +104,9 @@ export default function MainPage() {
 					</div>
 				</Toolbar>
 			</AppBar>
+			<ChipFilter onSortOrFilter={handleOnSortOrFilter} />
 			<div className="card-container">
-				{jobs.map((job, index) => (
+				{sortedJobs.map((job, index) => (
 					<JobCard job={job} key={index} />
 				))}
 			</div>
