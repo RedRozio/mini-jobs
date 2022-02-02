@@ -142,13 +142,14 @@ const deleteAccount = async () => {
 	await deleteDoc(getUserDocRef(user.uid));
 	// Delete all job posts from user, and all taken jobs
 	const jobs = await getJobs();
-	jobs.forEach((job) => {
+	for (let i = 0; i < jobs.length; i++) {
+		const job = jobs[i];
 		if (job.employee?.id === user.uid) {
-			untakeJob(job.id);
+			await untakeJob(job.id);
 		} else if (job.employer.id === user.uid) {
-			deleteJob(job.id);
+			await deleteJob(job.id);
 		}
-	});
+	}
 	await user.delete();
 };
 
