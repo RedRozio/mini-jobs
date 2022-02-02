@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,6 +12,16 @@ import { AccountCircle, Check } from '@mui/icons-material';
 import { ISimpleUser } from '../../utils/types';
 import { UserContext } from '../../App';
 import FormField from '../../components/formField/formField';
+import GoHomeButton from '../../components/goHomeButton/goHomeButton';
+import {
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
+} from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const initialValuesConst = {
 	firstName: '',
@@ -31,14 +40,14 @@ const validationSchema = Yup.object().shape({
 
 type ButtonState = 'noChanges' | 'unsavedChanges' | 'savedChanges';
 export default function SignupPage() {
-	const [initialValues, setInitialValues] = React.useState<null | ISimpleUser>(
-		null
-	);
-	const [buttonState, setButtonState] =
-		React.useState<ButtonState>('noChanges');
-	const user = React.useContext(UserContext);
+	const [initialValues, setInitialValues] = useState<null | ISimpleUser>(null);
+	const [buttonState, setButtonState] = useState<ButtonState>('noChanges');
+	const [fetchData, setFetchData] = useState(0);
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const navigate = useNavigate();
+	const user = useContext(UserContext);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		myFireBase.users
 			.getUser(user?.id ?? '')
 			.then((user) => {
@@ -48,14 +57,15 @@ export default function SignupPage() {
 			.catch((e) => {
 				console.log(e);
 			});
-	}, [user]);
+	}, [user, fetchData]);
 
 	const onSubmit = (formValues: ISimpleUser) => {
 		myFireBase.users.editUser(formValues).then(() => {
 			setButtonState('savedChanges');
 			setTimeout(() => {
 				setButtonState('noChanges');
-			}, 1000);
+				setFetchData(fetchData + 1);
+			}, 1500);
 		});
 	};
 
@@ -65,9 +75,9 @@ export default function SignupPage() {
 		validationSchema,
 		enableReinitialize: true,
 	});
-	const { handleChange, submitForm, errors, values } = formik;
+	const { submitForm, values } = formik;
 
-	React.useEffect(() => {
+	useEffect(() => {
 		let state = false;
 		for (let key in initialValues) {
 			const iv = initialValues as any;
@@ -83,6 +93,20 @@ export default function SignupPage() {
 			setButtonState('noChanges');
 		}
 	}, [initialValues, values]);
+
+	const handleDeleteAccount = () => {
+		myFireBase.auth
+			.deleteAccount()
+			.then(() => navigate('/'))
+			.catch((e: Error) => {
+				if (e.message.includes('requires-recent-login')) {
+					alert(
+						'You need a recent login to perform this action. Please login once more and try again.'
+					);
+					navigate('/signin');
+				}
+			});
+	};
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -134,7 +158,25 @@ export default function SignupPage() {
 					</Button>
 				</Box>
 				<GoHomeButton />
+				<Button
+					sx={{ marginTop: 5 }}
+					color="error"
+					onClick={() => setDialogOpen(true)}>
+					Delete my account
+				</Button>
 			</Box>
+			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+				<DialogTitle>Delete account?</DialogTitle>
+				<DialogContent>
+					<DialogContentText>This action cannot be undone.</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+					<Button onClick={handleDeleteAccount} autoFocus>
+						Delete
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 }
