@@ -70,6 +70,7 @@ export default function SignupPage() {
 							id="firstName"
 							title="First name"
 							fullWidth
+							autofocus
 						/>
 						<FormField
 							formik={formik}

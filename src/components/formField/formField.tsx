@@ -20,6 +20,7 @@ interface Props {
 	multiline?: boolean;
 	password?: boolean;
 	fullWidth?: boolean;
+	autofocus?: boolean;
 }
 
 export default function FormField({
@@ -31,6 +32,7 @@ export default function FormField({
 	multiline,
 	password,
 	fullWidth,
+	autofocus,
 }: Props) {
 	const { errors, handleChange, values } = formik;
 	return (
@@ -38,7 +40,7 @@ export default function FormField({
 			<TextField
 				name={id}
 				fullWidth
-				autoFocus
+				autoFocus={autofocus}
 				id={id}
 				label={title}
 				error={!!errors[id]}

@@ -75,6 +75,7 @@ export default function SigninPage() {
 								id="email"
 								title="Email address"
 								fullWidth
+								autofocus
 							/>
 							<FormField
 								formik={formik}
