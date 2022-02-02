@@ -28,17 +28,27 @@ const validationSchema = Yup.object().shape({
 	lastName: requiredString,
 	email: requiredString.email('Invalid email'),
 	password: requiredString.min(6, 'Mininum 6 characters'),
-	employeeDescription: Yup.string(),
-	employerDescription: Yup.string(),
+	employeeDescription: requiredString,
+	employerDescription: requiredString,
 });
 
 export default function SignupPage() {
 	const navigate = useNavigate();
 
 	const onSubmit = (formValues: typeof initialValues) => {
-		myFireBase.auth.createAccount(formValues).then(() => {
-			navigate('/');
-		});
+		myFireBase.auth
+			.createAccount(formValues)
+			.then(() => {
+				navigate('/');
+			})
+			.catch((e: Error) => {
+				if (e.message.includes('email-already-in-use')) {
+					formik.setErrors({
+						...formik.errors,
+						email: 'Email already in use',
+					});
+				}
+			});
 	};
 
 	const formik = useFormik({
@@ -89,18 +99,19 @@ export default function SignupPage() {
 							id="password"
 							title="Password"
 							fullWidth
+							password
 						/>
 						<FormField
 							formik={formik}
 							id="employeeDescription"
-							title="Employee Description (optional)"
+							title="Employee description"
 							fullWidth
 							multiline
 						/>
 						<FormField
 							formik={formik}
 							id="employerDescription"
-							title="Employer Description (optional)"
+							title="Employer description"
 							fullWidth
 							multiline
 						/>
