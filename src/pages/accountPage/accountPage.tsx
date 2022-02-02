@@ -133,6 +133,7 @@ export default function SignupPage() {
 							: 'Save changes'}
 					</Button>
 				</Box>
+				<GoHomeButton />
 			</Box>
 		</Container>
 	);
