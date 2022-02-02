@@ -135,12 +135,20 @@ const signIn = async ({ email, password }: ISigninParams): Promise<IUser> => {
 
 /**
  * Deletes a user in auth and in database
- * @param uid The email and password of the user to delete
  */
-const deleteAccount = async (email: string, password: string) => {
+const deleteAccount = async () => {
 	const user = auth.currentUser;
 	if (!user) throw new Error('Not currently signed in');
 	await deleteDoc(getUserDocRef(user.uid));
+	// Delete all job posts from user, and all taken jobs
+	const jobs = await getJobs();
+	jobs.forEach((job) => {
+		if (job.employee?.id === user.uid) {
+			untakeJob(job.id);
+		} else if (job.employer.id === user.uid) {
+			deleteJob(job.id);
+		}
+	});
 	await user.delete();
 };
 
@@ -149,8 +157,6 @@ const signOut = async () => {
 };
 
 const getUser = async (id: string): Promise<ISimpleUser> => {
-	console.log(`users/${id}`);
-
 	const userDoc = await getDoc(doc(db, `users/${id}`));
 	return userDoc.data() as ISimpleUser;
 };
