@@ -48,15 +48,10 @@ export default function SignupPage() {
 	const user = useContext(UserContext);
 
 	useEffect(() => {
-		myFireBase.users
-			.getUser(user?.id ?? '')
-			.then((user) => {
-				setInitialValues(user);
-				setButtonState('noChanges');
-			})
-			.catch((e) => {
-				console.log(e);
-			});
+		myFireBase.users.getUser(user?.id ?? '').then((user) => {
+			setInitialValues(user);
+			setButtonState('noChanges');
+		});
 	}, [user, fetchData]);
 
 	const onSubmit = (formValues: ISimpleUser) => {
