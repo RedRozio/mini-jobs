@@ -65,6 +65,7 @@ export default function JobCard({ job }: IProps) {
 	const handleClose = () => setAnchorEl(null);
 
 	const handleDeleteJob = () => {
+		setDialogOpen(false);
 		myFireBase.jobs.deleteJob(job.id);
 	};
 
