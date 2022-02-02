@@ -96,7 +96,7 @@ export default function SignupPage() {
 							/>
 							<FormField
 								formik={formik}
-								id="date"
+								id="timeJob"
 								title="Time"
 								fullWidth
 								date
