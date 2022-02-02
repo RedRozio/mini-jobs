@@ -39,6 +39,7 @@ export default function MainPage() {
 	};
 	const createJob = () => navigate('createJob');
 	const handleAccount = () => navigate('/account');
+	const handleSignIn = () => navigate('/signin');
 
 	return (
 		<div>
@@ -71,8 +72,12 @@ export default function MainPage() {
 							transformOrigin={anchorOrigin}
 							open={Boolean(anchorEl)}
 							onClose={handleClose}>
-							<MenuItem onClick={handleAccount}>Account</MenuItem>
-							<MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+							{user ? (
+								<MenuItem onClick={handleAccount}>Account</MenuItem>
+							) : (
+								<MenuItem onClick={handleSignIn}>Sign in</MenuItem>
+							)}
+							{user && <MenuItem onClick={handleSignOut}>Sign out</MenuItem>}
 						</Menu>
 					</div>
 				</Toolbar>
