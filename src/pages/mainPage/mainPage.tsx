@@ -3,58 +3,32 @@ import JobCard from '../../components/jobCard/JobCard';
 import myFireBase from '../../utils/myFireBase';
 import { IFullJob } from '../../utils/types';
 import './style.css';
-import {
-	AppBar,
-	Toolbar,
-	Typography,
-	IconButton,
-	Menu,
-	MenuItem,
-	Button,
-	PopoverOrigin,
-} from '@mui/material';
-import { AccountCircle, WorkOutline as WorkIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../App';
 import ChipFilter from '../../components/chipFilter/chipFilter';
 import {
 	OnSortOrFilterHandler,
 	SortTypes,
 } from '../../components/chipFilter/reducer';
-import sortJobs from '../../utils/sortJobs';
+import sortJobs from '../../components/chipFilter/sortJobs';
+import TopBar from '../../components/topBar/topBar';
 
-const anchorOrigin: PopoverOrigin = {
-	vertical: 'top',
-	horizontal: 'right',
+const initialSortTypes = {
+	sortType: undefined,
+	filters: [],
 };
 
 export default function MainPage() {
+	const user = useContext(UserContext);
+
 	const [jobs, setJobs] = useState<IFullJob[]>([]);
 	const [sortedJobs, setSortedJobs] = useState<IFullJob[]>([]);
-	const [sortTypes, setSortTypes] = useState<SortTypes>({
-		sortType: undefined,
-		filters: [],
-	});
-	const [anchorEl, setAnchorEl] = useState<any>(null);
-	const navigate = useNavigate();
-	const user = useContext(UserContext);
+	const [sortTypes, setSortTypes] = useState<SortTypes>(initialSortTypes);
 
 	useEffect(() => myFireBase.listeners.listenForJobChanges(setJobs), []);
 	useEffect(
 		() => setSortedJobs(sortJobs(jobs, sortTypes, user?.id)),
 		[sortTypes, jobs, user?.id]
 	);
-
-	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
-	const handleClose = () => setAnchorEl(null);
-	const handleSignOut = () => {
-		myFireBase.auth.signOut().then(() => {
-			navigate('/signin');
-		});
-	};
-	const createJob = () => navigate('createJob');
-	const handleAccount = () => navigate('/account');
-	const handleSignIn = () => navigate('/signin');
 
 	const handleOnSortOrFilter: OnSortOrFilterHandler = (sortType, filters) => {
 		setSortTypes({
@@ -65,45 +39,7 @@ export default function MainPage() {
 
 	return (
 		<div>
-			<AppBar position="sticky">
-				<Toolbar>
-					<WorkIcon />
-					<div style={{ width: '0.5rem' }}></div>
-					<Typography variant="h6" component="div">
-						Mini jobs
-					</Typography>
-					<div style={{ width: '3rem' }}></div>
-					<Typography variant="body1" component="div">
-						{user
-							? `Signed in as ${user.firstName} ${user.lastName}`
-							: 'Not signed in'}
-					</Typography>
-					<div style={{ flexGrow: 1 }}></div>
-					<div>
-						<Button color="inherit" onClick={createJob}>
-							Create job
-						</Button>
-						<IconButton size="large" onClick={handleMenu} color="inherit">
-							<AccountCircle />
-						</IconButton>
-						<Menu
-							id="menu-appbar"
-							anchorEl={anchorEl}
-							anchorOrigin={anchorOrigin}
-							keepMounted
-							transformOrigin={anchorOrigin}
-							open={Boolean(anchorEl)}
-							onClose={handleClose}>
-							{user ? (
-								<MenuItem onClick={handleAccount}>Account</MenuItem>
-							) : (
-								<MenuItem onClick={handleSignIn}>Sign in</MenuItem>
-							)}
-							{user && <MenuItem onClick={handleSignOut}>Sign out</MenuItem>}
-						</Menu>
-					</div>
-				</Toolbar>
-			</AppBar>
+			<TopBar />
 			<ChipFilter onSortOrFilter={handleOnSortOrFilter} />
 			<div className="card-container">
 				{sortedJobs.map((job, index) => (

@@ -1,8 +1,13 @@
 export type FilterType = 'taken' | 'available' | 'created';
-export type SortType = 'title' | 'price' | 'jobTime' | 'createdTime';
+export type SortType =
+	| 'title'
+	| 'price'
+	| 'jobTime'
+	| 'createdTime'
+	| undefined;
 
 export type SortTypes = {
-	sortType: SortType | undefined;
+	sortType: SortType;
 	filters: FilterType[];
 };
 
@@ -15,7 +20,7 @@ export type State = {
 }[];
 
 export type OnSortOrFilterHandler = (
-	sortType: SortType | undefined,
+	sortType: SortType,
 	filters: FilterType[]
 ) => void;
 

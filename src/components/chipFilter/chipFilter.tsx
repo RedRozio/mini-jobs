@@ -8,6 +8,7 @@ import reducer, {
 } from './reducer';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterIcon from '@mui/icons-material/FilterAlt';
+import './style.css';
 
 const initialState: State = [
 	{
@@ -53,6 +54,10 @@ interface Props {
 
 const CHIP_MARGIN = 0.75;
 
+const chipMarginMargin = {
+	margin: CHIP_MARGIN,
+};
+
 export default function ChipFilter(props: Props) {
 	const [state, updateState] = useReducer(reducer, initialState);
 
@@ -70,26 +75,12 @@ export default function ChipFilter(props: Props) {
 	return (
 		<Paper
 			variant="outlined"
+			className="chip-container"
 			sx={{
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'flex-start',
-				flexDirection: 'row',
-				listStyle: 'none',
 				p: CHIP_MARGIN * 2,
-				marginLeft: 'auto',
-				marginRight: 'auto',
-				marginTop: 2,
-				width: 'fit-content',
 			}}
 			component="div">
-			<Chip
-				icon={<SortIcon />}
-				label="Sort"
-				sx={{
-					margin: CHIP_MARGIN,
-				}}
-			/>
+			<Chip icon={<SortIcon />} label="Sort" sx={chipMarginMargin} />
 			{state.map(({ active, icon, label, type }, index) => {
 				return (
 					type === 'sort' && (
@@ -107,13 +98,7 @@ export default function ChipFilter(props: Props) {
 					)
 				);
 			})}
-			<Chip
-				icon={<FilterIcon />}
-				label="Filter"
-				sx={{
-					margin: CHIP_MARGIN,
-				}}
-			/>
+			<Chip icon={<FilterIcon />} label="Filter" sx={chipMarginMargin} />
 			{state.map(
 				({ active, icon, label, type }, index) =>
 					type === 'filter' && (
@@ -124,9 +109,7 @@ export default function ChipFilter(props: Props) {
 							onClick={() => updateState(index)}
 							variant={active ? 'filled' : 'outlined'}
 							color={active ? 'primary' : undefined}
-							sx={{
-								margin: CHIP_MARGIN,
-							}}
+							sx={chipMarginMargin}
 						/>
 					)
 			)}
