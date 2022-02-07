@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import FormField from '../../components/formField/formField';
+import GoHomeButton from '../../components/goHomeButton/goHomeButton';
 
 const initialValues = {
 	firstName: '',
@@ -62,7 +63,6 @@ export default function SignupPage() {
 			<CssBaseline />
 			<Box
 				sx={{
-					marginTop: 8,
 					display: 'flex',
 					flexDirection: 'column',
 					alignItems: 'center',
@@ -131,6 +131,8 @@ export default function SignupPage() {
 						</Grid>
 					</Grid>
 				</Box>
+				<br />
+				<GoHomeButton />
 			</Box>
 		</Container>
 	);

@@ -15,6 +15,7 @@ import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import FormField from '../../components/formField/formField';
+import GoHomeButton from '../../components/goHomeButton/goHomeButton';
 
 const initialValues = {
 	email: '',
@@ -102,6 +103,8 @@ export default function SigninPage() {
 						</Grid>
 					</form>
 				</Box>
+				<br />
+				<GoHomeButton />
 			</Box>
 		</Container>
 	);
