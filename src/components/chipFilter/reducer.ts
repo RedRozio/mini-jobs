@@ -1,3 +1,5 @@
+import {JSXElementConstructor, ReactElement} from "react";
+
 export type FilterType = 'taken' | 'available' | 'created';
 export type SortType =
 	| 'title'
@@ -14,7 +16,7 @@ export type SortTypes = {
 export type State = {
 	label: string;
 	value: FilterType | SortType;
-	icon?: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+	icon?: ReactElement<any, string | JSXElementConstructor<any>>;
 	active?: boolean;
 	type: 'sort' | 'filter';
 }[];
