@@ -11,6 +11,9 @@ import myFireBase from '../../utils/myFireBase';
 import { useNavigate } from 'react-router-dom';
 import WorkIcon from '@mui/icons-material/WorkOutline';
 import FormField from '../../components/formField/formField';
+import GoHomeButton from '../../components/goHomeButton/goHomeButton';
+import { useContext, useEffect } from 'react';
+import { UserContext } from '../../App';
 
 const initialValues = {
 	title: '',
@@ -32,7 +35,12 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function SignupPage() {
+	const user = useContext(UserContext);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!user) navigate('/signin');
+	}, [user]);
 
 	const onSubmit = (formValues: typeof initialValues) => {
 		myFireBase.jobs
@@ -112,6 +120,7 @@ export default function SignupPage() {
 						</Button>
 					</form>
 				</Box>
+				<GoHomeButton />
 			</Box>
 		</Container>
 	);

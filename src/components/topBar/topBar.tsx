@@ -55,9 +55,11 @@ export default function TopBar() {
 				</Typography>
 				<div style={{ flexGrow: 1 }}></div>
 				<div>
-					<Button color="inherit" onClick={createJob}>
-						Create job
-					</Button>
+					{user && (
+						<Button color="inherit" onClick={createJob}>
+							Create job
+						</Button>
+					)}
 					<IconButton size="large" onClick={handleMenu} color="inherit">
 						<AccountCircleIcon />
 					</IconButton>
