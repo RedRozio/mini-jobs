@@ -31,11 +31,11 @@ const initialState: State = [
 		value: 'createdTime',
 		type: 'sort',
 	},
-	{
+	/* 	{
 		label: 'Taken',
 		value: 'taken',
 		type: 'filter',
-	},
+	}, */
 	{
 		label: 'Created by me',
 		value: 'created',
