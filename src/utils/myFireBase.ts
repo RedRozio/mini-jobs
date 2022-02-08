@@ -28,6 +28,7 @@ import {
 	IUserParameter,
 	ISinginParams as ISigninParams,
 	ITimeStamp,
+	IJobDocData,
 } from './types';
 import firebaseConfig from '../constants/firebaseConfig';
 
@@ -162,6 +163,12 @@ const getUser = async (id: string): Promise<ISimpleUser> => {
 	return userDoc.data() as ISimpleUser;
 };
 
+const getUserWithId = async (id: string): Promise<IUser | null> => {
+	if (!id.length) return null;
+	const userDoc = await getUser(id);
+	return { ...userDoc, id };
+};
+
 const editUser = async (values: ISimpleUser) => {
 	const user = getCurrentUser();
 	await updateDoc(getUserDocRef(user.uid), values as any);
@@ -218,19 +225,24 @@ const getJob = async (id: string): Promise<IFullJob | null> => {
 	const docRef = doc(db, `jobs/${id}`);
 	const jobDoc = await getDoc(docRef);
 	if (!jobDoc.exists()) return null;
-	const jobDocData = jobDoc.data() as any;
+	const jobDocData = jobDoc.data() as IJobDocData;
+	const {
+		employee: employeeId,
+		employer: employerId,
+		timeCreated,
+		timeJob,
+	} = jobDocData;
+
+	const employee = await getUserWithId(employeeId);
+	const employer = (await getUserWithId(employerId)) as unknown as IUser;
+
 	const fullJobDocData: IFullJob = {
 		...jobDocData,
 		id: jobDoc.id,
-		employer: {
-			...(await getUser(jobDocData.employer)),
-			id: jobDocData.employer,
-		},
-		employee: jobDocData.employee.length
-			? { ...(await getUser(jobDocData.employee)), id: jobDocData.employee }
-			: null,
-		timeCreated: timestampToDate(jobDocData.timeCreated),
-		timeJob: timestampToDate(jobDocData.timeJob),
+		employer,
+		employee,
+		timeCreated: timestampToDate(timeCreated),
+		timeJob: timestampToDate(timeJob),
 	};
 	return fullJobDocData;
 };

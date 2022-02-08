@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface IUser {
 	employeeDescription: string;
 	employerDescription: string;
@@ -59,4 +61,15 @@ export interface ISinginParams {
 export interface ITimeStamp {
 	seconds: number;
 	nanoseconds: number;
+}
+
+export interface IJobDocData {
+	title: string;
+	description: string;
+	price: number;
+	employee: string;
+	employer: string;
+	image: string;
+	timeCreated: Timestamp;
+	timeJob: Timestamp;
 }
