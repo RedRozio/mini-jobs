@@ -11,6 +11,11 @@ import {
 	Menu,
 	MenuItem,
 	PopoverOrigin,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
 } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -26,13 +31,15 @@ export default function TopBar() {
 	const user = useContext(UserContext);
 
 	const [anchorEl, setAnchorEl] = useState<any>(null);
+	const [dialogOpen, setDialogOpen] = useState(false);
 	const navigate = useNavigate();
 
 	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
 	const handleClose = () => setAnchorEl(null);
 	const handleSignOut = () => {
 		myFireBase.auth.signOut().then(() => {
-			navigate('/signin');
+			navigate('/');
+			setDialogOpen(false);
 		});
 	};
 	const createJob = () => navigate('createJob');
@@ -76,10 +83,26 @@ export default function TopBar() {
 						) : (
 							<MenuItem onClick={handleSignIn}>Sign in</MenuItem>
 						)}
-						{user && <MenuItem onClick={handleSignOut}>Sign out</MenuItem>}
+						{user && (
+							<MenuItem onClick={() => setDialogOpen(true)}>Sign out</MenuItem>
+						)}
 					</Menu>
 				</div>
 			</Toolbar>
+			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+				<DialogTitle>Sign out?</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						You will be signed out from this browser.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+					<Button onClick={handleSignOut} autoFocus>
+						Sign out
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</AppBar>
 	);
 }
