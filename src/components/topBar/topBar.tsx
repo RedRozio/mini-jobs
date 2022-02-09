@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../App';
 import useIsMobile from '../../hooks/useIsMobile';
 import myFireBase from '../../utils/myFireBase';
+import getSignedInText from '../../utils/getSignedInText';
 import './style.css';
 
 const anchorOrigin: PopoverOrigin = {
@@ -121,23 +122,3 @@ export default function TopBar() {
 		</AppBar>
 	);
 }
-
-const getSignedInText = (
-	isSignedIn: boolean,
-	isMobile: boolean,
-	userName: string
-) => {
-	if (isMobile) {
-		if (isSignedIn) {
-			return 'Signed in';
-		} else {
-			return 'Signed out';
-		}
-	} else {
-		if (isSignedIn) {
-			return 'Signed in as ' + userName;
-		} else {
-			return 'Signed out';
-		}
-	}
-};
