@@ -9,6 +9,7 @@ import reducer, {
 import SortIcon from '@mui/icons-material/Sort';
 import FilterIcon from '@mui/icons-material/FilterAlt';
 import './style.css';
+import useIsMobile from '../../hooks/useIsMobile';
 
 const initialState: State = [
 	{
@@ -59,6 +60,7 @@ const chipMarginMargin = {
 };
 
 export default function ChipFilter(props: Props) {
+	const isMobile = useIsMobile();
 	const [state, updateState] = useReducer(reducer, initialState);
 
 	useEffect(() => {
@@ -73,46 +75,55 @@ export default function ChipFilter(props: Props) {
 	}, [state]);
 
 	return (
-		<Paper
-			variant="outlined"
-			className="chip-container"
-			sx={{
-				p: CHIP_MARGIN * 2,
-			}}
-			component="div">
-			<Chip icon={<SortIcon />} label="Sort" sx={chipMarginMargin} />
-			{state.map(({ active, icon, label, type }, index) => {
-				return (
-					type === 'sort' && (
-						<Chip
-							key={index}
-							icon={icon}
-							label={label}
-							onClick={() => updateState(index)}
-							variant={active ? 'filled' : 'outlined'}
-							color={active ? 'primary' : undefined}
-							sx={{
-								margin: CHIP_MARGIN,
-							}}
-						/>
-					)
-				);
-			})}
-			<Chip icon={<FilterIcon />} label="Filter" sx={chipMarginMargin} />
-			{state.map(
-				({ active, icon, label, type }, index) =>
-					type === 'filter' && (
-						<Chip
-							key={index}
-							icon={icon}
-							label={label}
-							onClick={() => updateState(index)}
-							variant={active ? 'filled' : 'outlined'}
-							color={active ? 'primary' : undefined}
-							sx={chipMarginMargin}
-						/>
-					)
-			)}
-		</Paper>
+		<div className="chip-container-container">
+			<Paper
+				variant="outlined"
+				className="chip-container"
+				sx={{
+					p: CHIP_MARGIN * 2,
+					marginLeft: isMobile ? '1rem' : 'auto',
+					marginRight: isMobile ? '1rem' : 'auto',
+				}}
+				component="div">
+				<div>
+					<Chip icon={<SortIcon />} label="Sort" sx={chipMarginMargin} />
+					{state.map(({ active, icon, label, type }, index) => {
+						return (
+							type === 'sort' && (
+								<Chip
+									key={index}
+									icon={icon}
+									label={label}
+									onClick={() => updateState(index)}
+									variant={active ? 'filled' : 'outlined'}
+									color={active ? 'primary' : undefined}
+									sx={{
+										margin: CHIP_MARGIN,
+									}}
+								/>
+							)
+						);
+					})}
+				</div>
+
+				<div>
+					<Chip icon={<FilterIcon />} label="Filter" sx={chipMarginMargin} />
+					{state.map(
+						({ active, icon, label, type }, index) =>
+							type === 'filter' && (
+								<Chip
+									key={index}
+									icon={icon}
+									label={label}
+									onClick={() => updateState(index)}
+									variant={active ? 'filled' : 'outlined'}
+									color={active ? 'primary' : undefined}
+									sx={chipMarginMargin}
+								/>
+							)
+					)}
+				</div>
+			</Paper>
+		</div>
 	);
 }

@@ -20,7 +20,9 @@ import {
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../App';
+import useIsMobile from '../../hooks/useIsMobile';
 import myFireBase from '../../utils/myFireBase';
+import './style.css';
 
 const anchorOrigin: PopoverOrigin = {
 	vertical: 'top',
@@ -29,9 +31,10 @@ const anchorOrigin: PopoverOrigin = {
 
 export default function TopBar() {
 	const user = useContext(UserContext);
+	const isMobile = useIsMobile();
 
 	const [anchorEl, setAnchorEl] = useState<any>(null);
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const [signOutdialogOpen, setSignOutDialogOpen] = useState(false);
 	const navigate = useNavigate();
 
 	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
@@ -39,8 +42,12 @@ export default function TopBar() {
 	const handleSignOut = () => {
 		myFireBase.auth.signOut().then(() => {
 			navigate('/');
-			setDialogOpen(false);
+			setSignOutDialogOpen(false);
 		});
+	};
+	const handleSignOutClick = () => {
+		handleClose();
+		setSignOutDialogOpen(true);
 	};
 	const createJob = () => navigate('createJob');
 	const handleAccount = () => navigate('/account');
@@ -48,20 +55,28 @@ export default function TopBar() {
 
 	return (
 		<AppBar position="sticky">
-			<Toolbar>
-				<WorkIcon />
-				<div style={{ width: '0.5rem' }}></div>
-				<Typography variant="h6" component="div">
-					Mini jobs
-				</Typography>
-				<div style={{ width: '3rem' }}></div>
+			<Toolbar
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+				}}>
+				<div className="group">
+					<WorkIcon />
+					{!isMobile && (
+						<Typography variant="h6" component="div">
+							Mini jobs
+						</Typography>
+					)}
+				</div>
 				<Typography variant="body1" component="div">
-					{user
-						? `Signed in as ${user.firstName} ${user.lastName}`
-						: 'Not signed in'}
+					{getSignedInText(
+						!!user,
+						isMobile,
+						`${user?.firstName} ${user?.lastName}`
+					)}
 				</Typography>
-				<div style={{ flexGrow: 1 }}></div>
-				<div>
+				<div className="group">
 					{user && (
 						<Button color="inherit" onClick={createJob}>
 							Create job
@@ -83,13 +98,13 @@ export default function TopBar() {
 						) : (
 							<MenuItem onClick={handleSignIn}>Sign in</MenuItem>
 						)}
-						{user && (
-							<MenuItem onClick={() => setDialogOpen(true)}>Sign out</MenuItem>
-						)}
+						{user && <MenuItem onClick={handleSignOutClick}>Sign out</MenuItem>}
 					</Menu>
 				</div>
 			</Toolbar>
-			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+			<Dialog
+				open={signOutdialogOpen}
+				onClose={() => setSignOutDialogOpen(false)}>
 				<DialogTitle>Sign out?</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
@@ -97,7 +112,7 @@ export default function TopBar() {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+					<Button onClick={() => setSignOutDialogOpen(false)}>Cancel</Button>
 					<Button onClick={handleSignOut} autoFocus>
 						Sign out
 					</Button>
@@ -106,3 +121,23 @@ export default function TopBar() {
 		</AppBar>
 	);
 }
+
+const getSignedInText = (
+	isSignedIn: boolean,
+	isMobile: boolean,
+	userName: string
+) => {
+	if (isMobile) {
+		if (isSignedIn) {
+			return 'Signed in';
+		} else {
+			return 'Signed out';
+		}
+	} else {
+		if (isSignedIn) {
+			return 'Signed in as ' + userName;
+		} else {
+			return 'Signed out';
+		}
+	}
+};
