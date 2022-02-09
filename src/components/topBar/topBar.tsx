@@ -34,7 +34,7 @@ export default function TopBar() {
 	const isMobile = useIsMobile();
 
 	const [anchorEl, setAnchorEl] = useState<any>(null);
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const [signOutdialogOpen, setSignOutDialogOpen] = useState(false);
 	const navigate = useNavigate();
 
 	const handleMenu = (e: any) => setAnchorEl(e.currentTarget);
@@ -42,8 +42,12 @@ export default function TopBar() {
 	const handleSignOut = () => {
 		myFireBase.auth.signOut().then(() => {
 			navigate('/');
-			setDialogOpen(false);
+			setSignOutDialogOpen(false);
 		});
+	};
+	const handleSignOutClick = () => {
+		handleClose();
+		setSignOutDialogOpen(true);
 	};
 	const createJob = () => navigate('createJob');
 	const handleAccount = () => navigate('/account');
@@ -94,13 +98,13 @@ export default function TopBar() {
 						) : (
 							<MenuItem onClick={handleSignIn}>Sign in</MenuItem>
 						)}
-						{user && (
-							<MenuItem onClick={() => setDialogOpen(true)}>Sign out</MenuItem>
-						)}
+						{user && <MenuItem onClick={handleSignOutClick}>Sign out</MenuItem>}
 					</Menu>
 				</div>
 			</Toolbar>
-			<Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+			<Dialog
+				open={signOutdialogOpen}
+				onClose={() => setSignOutDialogOpen(false)}>
 				<DialogTitle>Sign out?</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
@@ -108,7 +112,7 @@ export default function TopBar() {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+					<Button onClick={() => setSignOutDialogOpen(false)}>Cancel</Button>
 					<Button onClick={handleSignOut} autoFocus>
 						Sign out
 					</Button>
