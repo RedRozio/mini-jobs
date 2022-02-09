@@ -12,5 +12,5 @@ export default function useIsMobile() {
 		};
 	}, []);
 
-	return width <= 768;
+	return width <= 750;
 }
