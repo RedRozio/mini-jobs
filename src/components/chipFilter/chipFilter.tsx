@@ -1,15 +1,11 @@
 import { Paper, Chip } from '@mui/material';
 import { useEffect, useReducer } from 'react';
-import reducer, {
-	FilterType,
-	OnSortOrFilterHandler,
-	SortType,
-	State,
-} from './reducer';
+import reducer from './reducer';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterIcon from '@mui/icons-material/FilterAlt';
 import './style.css';
 import useIsMobile from '../../hooks/useIsMobile';
+import { State, OnSortOrFilterHandler, SortType, FilterType } from './types';
 
 const initialState: State = [
 	{
@@ -32,11 +28,11 @@ const initialState: State = [
 		value: 'createdTime',
 		type: 'sort',
 	},
-	/* 	{
+	{
 		label: 'Taken',
 		value: 'taken',
 		type: 'filter',
-	}, */
+	},
 	{
 		label: 'Created by me',
 		value: 'created',

@@ -1,5 +1,5 @@
-import { SortTypes } from './reducer';
 import { IFullJob } from '../../utils/types';
+import { SortTypes } from './types';
 
 export default function sortJobs(
 	currentState: IFullJob[],

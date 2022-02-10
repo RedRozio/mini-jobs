@@ -5,12 +5,12 @@ import { IFullJob } from '../../utils/types';
 import './style.css';
 import { UserContext } from '../../App';
 import ChipFilter from '../../components/chipFilter/chipFilter';
-import {
-	OnSortOrFilterHandler,
-	SortTypes,
-} from '../../components/chipFilter/reducer';
 import sortJobs from '../../components/chipFilter/sortJobs';
 import TopBar from '../../components/topBar/topBar';
+import {
+	SortTypes,
+	OnSortOrFilterHandler,
+} from '../../components/chipFilter/types';
 
 const initialSortTypes = {
 	sortType: undefined,
