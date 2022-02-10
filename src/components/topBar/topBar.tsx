@@ -24,6 +24,7 @@ import useIsMobile from '../../hooks/useIsMobile';
 import myFireBase from '../../utils/myFireBase';
 import getSignedInText from '../../utils/getSignedInText';
 import './style.css';
+import generateJob from '../../utils/generateJob';
 
 const anchorOrigin: PopoverOrigin = {
 	vertical: 'top',
@@ -78,6 +79,9 @@ export default function TopBar() {
 					)}
 				</Typography>
 				<div className="group">
+					{/* {<Button color="inherit" onClick={generateJob}>
+						Create random job
+					</Button>} */}
 					{user && (
 						<Button color="inherit" onClick={createJob}>
 							Create job
