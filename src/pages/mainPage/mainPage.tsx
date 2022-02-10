@@ -46,6 +46,7 @@ export default function MainPage() {
 					<JobCard job={job} key={index} />
 				))}
 			</div>
+			<div className="vertical-space"></div>
 		</div>
 	);
 }

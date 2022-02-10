@@ -8,3 +8,28 @@
 	margin: auto;
 	margin-top: 1rem;
 }
+
+.vertical-space {
+	height: 2rem;
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: 0;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f100;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 5rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
