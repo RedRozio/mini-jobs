@@ -74,7 +74,7 @@ export default function TopBar() {
 					{getSignedInText(
 						!!user,
 						isMobile,
-						`${user?.firstName} ${user?.lastName}`
+						`${user?.firstName} ${user?.lastName}`,
 					)}
 				</Typography>
 				<div className="group">
