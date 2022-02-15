@@ -24,7 +24,6 @@ import useIsMobile from '../../hooks/useIsMobile';
 import myFireBase from '../../utils/myFireBase';
 import getSignedInText from '../../utils/getSignedInText';
 import './style.css';
-import generateJob from '../../utils/generateJob';
 
 const anchorOrigin: PopoverOrigin = {
 	vertical: 'top',

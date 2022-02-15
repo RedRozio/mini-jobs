@@ -10,9 +10,11 @@ import {
 	onSnapshot,
 	orderBy,
 	query,
+	QueryConstraint,
 	setDoc,
 	Timestamp,
 	updateDoc,
+	where,
 } from 'firebase/firestore';
 import {
 	getAuth,
@@ -31,6 +33,7 @@ import {
 	IJobDocData,
 } from './types';
 import firebaseConfig from '../constants/firebaseConfig';
+import { SortTypes } from '../components/chipFilter/types';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -208,12 +211,58 @@ const deleteJob = async (id: string) => {
 	await deleteDoc(doc(db, `jobs/${id}`));
 };
 
+const queryJobs = async ({
+	filters,
+	sortType,
+}: SortTypes): Promise<IFullJob[]> => {
+	const userId = auth.currentUser?.uid;
+	if (!userId) return getJobs();
+	const queryConstraints: QueryConstraint[] = [];
+	filters.forEach((filter) => {
+		switch (filter) {
+			case 'available':
+				queryConstraints.push(where('employee', '==', ''));
+				break;
+			case 'created':
+				queryConstraints.push(where('employer', '==', userId));
+				break;
+			case 'taken':
+				queryConstraints.push(where('employee', '==', userId));
+				break;
+		}
+	});
+	switch (sortType) {
+		case 'createdTime':
+			queryConstraints.push(orderBy('timeCreated'));
+			break;
+		case 'jobTime':
+			queryConstraints.push(orderBy('timeJob'));
+			break;
+		case 'price':
+			queryConstraints.push(orderBy('price'));
+			break;
+		case 'title':
+			queryConstraints.push(orderBy('title'));
+			break;
+	}
+	return getJobs(...queryConstraints);
+};
+
 /**
  * Fetches all jobs in the database
  * @returns Array of job objects
  */
-const getJobs = async (): Promise<IFullJob[]> => {
-	const docs = (await getDocs(jobsQuery)).docs;
+const getJobs = async (
+	...queryConstraints: QueryConstraint[]
+): Promise<IFullJob[]> => {
+	console.log(queryConstraints);
+
+	// if (queryConstraints.length === 0) {
+	// 	queryConstraints.push(orderBy('title'));
+	// }
+	const constraints = [...queryConstraints];
+	const _query = query(collection(db, 'jobs'), ...constraints);
+	const docs = (await getDocs(_query)).docs;
 	const promises: Promise<IFullJob>[] = [];
 	for (let i = 0; i < docs.length; i++) {
 		promises.push(getJob(docs[i].id) as Promise<IFullJob>);
@@ -290,6 +339,7 @@ const myFireBase = {
 		createJob,
 		deleteJob,
 		getJobs,
+		queryJobs,
 		getJob,
 		takeJob,
 		untakeJob,

@@ -5,7 +5,6 @@ import { IFullJob } from '../../utils/types';
 import './style.css';
 import { UserContext } from '../../App';
 import ChipFilter from '../../components/chipFilter/chipFilter';
-import sortJobs from '../../components/chipFilter/sortJobs';
 import TopBar from '../../components/topBar/topBar';
 import {
 	SortTypes,
@@ -25,10 +24,9 @@ export default function MainPage() {
 	const [sortTypes, setSortTypes] = useState<SortTypes>(initialSortTypes);
 
 	useEffect(() => myFireBase.listeners.listenForJobChanges(setJobs), []);
-	useEffect(
-		() => setSortedJobs(sortJobs(jobs, sortTypes, user?.id)),
-		[sortTypes, jobs, user?.id]
-	);
+	useEffect(() => {
+		myFireBase.jobs.queryJobs(sortTypes).then(setSortedJobs);
+	}, [sortTypes, jobs]);
 
 	const handleOnSortOrFilter: OnSortOrFilterHandler = (sortType, filters) => {
 		setSortTypes({
@@ -40,7 +38,7 @@ export default function MainPage() {
 	return (
 		<div>
 			<TopBar />
-			<ChipFilter onSortOrFilter={handleOnSortOrFilter} />
+			{user && <ChipFilter onSortOrFilter={handleOnSortOrFilter} />}
 			<div className="card-container">
 				{sortedJobs.map((job, index) => (
 					<JobCard job={job} key={index} />
