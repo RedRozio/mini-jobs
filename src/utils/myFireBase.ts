@@ -58,7 +58,7 @@ const jobsQuery = query(collection(db, 'jobs'), orderBy('title'));
  * @returns The unsubscribe function to stop listening
  */
 const listenForAuthChanges = (
-	listener: (user: IUser | null) => void
+	listener: (user: IUser | null) => void,
 ): Unsubscribe =>
 	auth.onAuthStateChanged(async (user) => {
 		if (user) {
@@ -130,7 +130,7 @@ const signIn = async ({ email, password }: ISigninParams): Promise<IUser> => {
 	const { user: authUser } = await signInWithEmailAndPassword(
 		auth,
 		email,
-		password
+		password,
 	);
 
 	const userDoc = await getDoc(getUserDocRef(authUser.uid));
@@ -231,20 +231,9 @@ const queryJobs = async ({
 				break;
 		}
 	});
-	switch (sortType) {
-		case 'createdTime':
-			queryConstraints.push(orderBy('timeCreated'));
-			break;
-		case 'jobTime':
-			queryConstraints.push(orderBy('timeJob'));
-			break;
-		case 'price':
-			queryConstraints.push(orderBy('price'));
-			break;
-		case 'title':
-			queryConstraints.push(orderBy('title'));
-			break;
-	}
+
+	if (sortType) queryConstraints.push(orderBy(sortType));
+
 	return getJobs(...queryConstraints);
 };
 
@@ -257,9 +246,6 @@ const getJobs = async (
 ): Promise<IFullJob[]> => {
 	console.log(queryConstraints);
 
-	// if (queryConstraints.length === 0) {
-	// 	queryConstraints.push(orderBy('title'));
-	// }
 	const constraints = [...queryConstraints];
 	const _query = query(collection(db, 'jobs'), ...constraints);
 	const docs = (await getDocs(_query)).docs;
