@@ -1,35 +1,35 @@
 .card-container {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: center;
-	width: fit-content;
-	gap: 2rem;
-	margin: auto;
-	margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: fit-content;
+  gap: 2rem;
+  margin: auto;
+  margin-top: 1rem;
 }
 
 .vertical-space {
-	height: 2rem;
+  height: 2rem;
 }
 
 /* width */
 ::-webkit-scrollbar {
-	width: 0;
+  width: 0;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: #f1f1f100;
+  background: #f1f1f100;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-	background: #888;
-	border-radius: 5rem;
+  background: #888;
+  border-radius: 5rem;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-	background: #555;
+  background: #555;
 }

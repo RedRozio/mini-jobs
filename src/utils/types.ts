@@ -1,75 +1,75 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 export interface IUser {
-	employeeDescription: string;
-	employerDescription: string;
-	firstName: string;
-	lastName: string;
-	id: string;
+  employeeDescription: string;
+  employerDescription: string;
+  firstName: string;
+  lastName: string;
+  id: string;
 }
 
 export interface IFullJob {
-	title: string;
-	description: string;
-	price: number;
-	employee: IUser | null;
-	employer: IUser;
-	image: string;
-	timeCreated: Date;
-	timeJob: Date;
-	id: string;
+  title: string;
+  description: string;
+  price: number;
+  employee: IUser | null;
+  employer: IUser;
+  image: string;
+  timeCreated: Date;
+  timeJob: Date;
+  id: string;
 }
 
 export interface JobRaw {
-	employer: string;
-	title: string;
-	timeCreated: Time;
-	employee: string;
-	description: string;
-	price: number;
-	timeJob: Time;
-	image: string;
-	id: string;
+  employer: string;
+  title: string;
+  timeCreated: Time;
+  employee: string;
+  description: string;
+  price: number;
+  timeJob: Time;
+  image: string;
+  id: string;
 }
 
 interface Time {
-	seconds: number;
-	nanoseconds: number;
+  seconds: number;
+  nanoseconds: number;
 }
 
 export interface ISimpleUser {
-	employerDescription: string;
-	lastName: string;
-	employeeDescription: string;
-	firstName: string;
+  employerDescription: string;
+  lastName: string;
+  employeeDescription: string;
+  firstName: string;
 }
 
 export interface IUserParameter {
-	email: string;
-	password: string;
-	firstName: string;
-	lastName: string;
-	employeeDescription?: string;
-	employerDescription?: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  employeeDescription?: string;
+  employerDescription?: string;
 }
 
 export interface ISinginParams {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface ITimeStamp {
-	seconds: number;
-	nanoseconds: number;
+  seconds: number;
+  nanoseconds: number;
 }
 
 export interface IJobDocData {
-	title: string;
-	description: string;
-	price: number;
-	employee: string;
-	employer: string;
-	image: string;
-	timeCreated: Timestamp;
-	timeJob: Timestamp;
+  title: string;
+  description: string;
+  price: number;
+  employee: string;
+  employer: string;
+  image: string;
+  timeCreated: Timestamp;
+  timeJob: Timestamp;
 }
